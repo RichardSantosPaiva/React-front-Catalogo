@@ -1,34 +1,38 @@
 import {useState} from 'react'
 import api from '../../service/api'
-import { useNavigate , Link} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Login(props) {
+export default function Cadastro(props) {
+    const [userName, setUserName] = useState();
     const [email, setEmail] = useState();
     const [passwordUser, setPassword] = useState();
     const navigate = useNavigate();
 
 
-    async function Login(e) {
+    async function Cadastro(e) {
         e.preventDefault(); 
 
         try {
-            console.log('[🔐 Login] Enviando dados para login:', { UserName: name, Password: passwordUser })
+            console.log('[🔐 Login] Enviando dados para cadastro:', {
+                userName: userName,
+                email: email,
+                password: passwordUser
+            })
 
-            const response = await api.post(`/Auth/login`, {
+            const response = await api.post(`/Auth/register`, {
+                userName: userName,
                 email: email,
                 password: passwordUser
             }, {
               withCredentials: true 
             })
-
-            if (response.status == 200) {
-                navigate('/catalogo')
-            } 
+            
+            navigate('/login') 
 
         }   catch (error) {
-                console.error('[❌ Login Erro]', error);
+                console.error('[❌ Cadastro Erro]', error);
                 if (error.response) {
-                    alert("usuário não cadastrado")
+                    console.log('Usuario já cadastrado!')
                     console.error('🔎 Status:', error.response.status);
                     console.error('📦 Data:', error.response.data);
                 }
@@ -37,13 +41,13 @@ export default function Login(props) {
 
     return (
         <div className="container">
-            <h1>login</h1>
-            <form onSubmit={e => Login(e)}>
+            <h1>Cadastro</h1>
+            <form onSubmit={e => Cadastro(e)}>
+                <input type="text" name="name" onChange={e => setUserName(e.target.value)}/>
                 <input type="text" name="email" onChange={e => setEmail(e.target.value)}/>
                 <input type="text" name="senha"  onChange={e => setPassword(e.target.value)}/>
                 <button type="submit">enviar</button>
             </form>
-            <Link to="/cadastro">Cadastra-se</Link>
         </div>
     )
 }
